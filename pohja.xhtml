@@ -25,8 +25,14 @@ Joukkueiden nimistä tehdään linkkejä, jotka vievät joukkuelomakkeeseen.
 Lomakkeeseen tulevat muokattavaksi klikatun joukkueen tiedot.
 
 -->
+<div id="container1"> 
+<div id="tuloksetdiv">
+<table id="tuloksetlista">
+  
+</table>
+</div>
         
-<h2>Lisää rasti</h2>
+
 <!--
 Tähän tulee rastin lisäämistä varten lomake
 Koodi saa olla mitä tahansa, mutta sen on oltava uniikki
@@ -40,8 +46,29 @@ maxlength tai minlength. Kaikkien tehtävässä mainittujen rajoitteiden tarkist
 javascript-koodissa.
 
 -->
+<div id="rasticontainer">
+<h2>Lisää rasti</h2>
+<form action="#">
+  <fieldset>
+    <legend>Rastin tiedot</legend>
+    <p>
+      <label>Lat <input type="number" id="Lat" name="Lat" step="any" /></label>
+    </p>
+    <p>
+      <label>Lon <input type="number" id="Lon" name="Lon" step="any" /></label>
+    </p>
+    <p>
+      <label>Koodi <input type="text" id="Koodi" name="Koodi" /></label>
+    </p>
+    <p><input type="submit" value="Lisää rasti" /></p>
 
-<h2>Joukkue</h2>
+  </fieldset>
+</form>
+
+</div>
+
+
+
         
 <!--
 Kolmostasolla täydennä tähän lomake jolla voi lisätä uuden joukkueen tai muokata
@@ -94,7 +121,40 @@ Jos joukkueen leimauksiin tehdään muutoksia niin myös tuloslistaus täytyy
 päivittää.
 
 -->
+
+<div id="joukkuecontainer">
+  <h2>Joukkue</h2>
+<form action="#" id="lisayslomake">
+  <fieldset id="tiedot">
+    <legend>Uusi joukkue</legend>
+    <p>
+      <label>Nimi <input type="text" id="jnimi" name="jnimi" value=""/></label>
+    </p>
+   
+    <fieldset id="jasenetfield">
+      <legend>Jäsenet</legend>
+      <div id="jaseninputit">
+          <label>Jäsen 1 <input type="text" id="Jasen 1" name="Jasen1" class="jasenet" value=""/></label>
+
+
+          <label>Jäsen 2 <input type="text" id="Jasen 2" name="Jasen2" class="jasenet" value=""/></label>
+
+        </div>
+  </fieldset>
+  <input type="submit" value="Tallenna" />
+  </fieldset>
+
+  
+</form>
+</div>
+</div>
+
 <h2>Rastit</h2>
+
+<ul id="rastilista">
+  
+</ul>
+
 
 <!-- Tähän tulee listaus kaikista rastikoodeista -->      
 
