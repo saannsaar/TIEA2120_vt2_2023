@@ -134,7 +134,7 @@
 			joukkueYksi["tuloksetlista"] = {
 				"nimi": joukkuenimi1.textContent,
 				"sarja": sarjanimi1.textContent,
-				"jasenet": jasenet
+				"jasenet": jasenetnimet
 			};
 			tr.appendChild(td2);
 
@@ -230,7 +230,7 @@ let muokkausbutton = document.getElementById("muokkausbutton");
 	let joukkueennimii = e.target;
 	joukkueennimii.setCustomValidity("");
 	if (tallennusbuttoni.value == "Tallenna muutokset") {
-		muokattava_joukkue["tuloksetlista"]["nimi"] = e.target.value;
+		muokattava_joukkue["nimi"] = e.target.value;
 		console.log(muokattava_joukkue["tuloksetlista"]["nimi"]);
 	} else if (tallennusbuttoni.value =="Lisää joukkue") {
 		
@@ -548,7 +548,7 @@ for (let i = 0; i < jasenlaatikot.length; i++) {
   //Submit tapahtumankäsittelijä jossa myös poistetaan listaus ja lisätään se uudestaan uuden jäsenen kera
   lomake2.addEventListener("submit", function(e) {
 
-	if (tallennusbuttoni.value ="Lisää joukkue") {
+	if (tallennusbuttoni.value =="Lisää joukkue") {
 		e.preventDefault();
 	
 	joukkuelisays();
@@ -573,17 +573,59 @@ for (let i = 0; i < jasenlaatikot.length; i++) {
 	buttonit[0].checked = true;
   
 
-	} else if (tallennusbuttoni.value ="Tallenna muutokset") {
+	} else if (tallennusbuttoni.value =="Tallenna muutokset") {
 		e.preventDefault();
 
-		let valittusarja = lomake.getElementsByClassName("sarjabutton");
+		let valittusarja = lomake2.getElementsByClassName("sarjabutton");
+		console.log(valittusarja);
 		// ====================// ====================
 		  let valittusarjavalue;
 		  for (let i = 0; i < valittusarja.length; i++) {
-			if (valittusarja[i].checked) {
-			  valittusarjavalue = valittusarja[i].parentElement.textContent;
+			if (valittusarja[i].checked == true) {
+				console.log(valittusarja[i]);
+			  valittusarjavalue = valittusarja[i].value;
 			}
 		  }
+		  console.log(valittusarjavalue);
+		  let jasenetarray = [];
+			let jasenlaatikot = document.getElementsByClassName("jasenet");
+
+			for (let i = 0; i < jasenlaatikot.length; i++) {
+			if (jasenlaatikot[i].value.length == 0) {
+				continue;
+			} else {
+				jasenetarray.push(jasenlaatikot[i].value);
+			}
+			}
+			 
+  		muokattava_joukkue["sarja"] = valittusarjavalue;
+  		muokattava_joukkue["jasenet"] = jasenetarray;
+		console.log(muokattava_joukkue["nimi"]);
+	  	alkuperainen_joukkue["nimi"] = muokattava_joukkue["nimi"];
+	  	alkuperainen_joukkue["sarja"] = muokattava_joukkue["sarja"];
+	  	alkuperainen_joukkue["jasenet"] = muokattava_joukkue["jasenet"];
+	  	alkuperainen_joukkue["tuloksetlista"]["nimi"] = muokattava_joukkue["nimi"];
+	  	alkuperainen_joukkue["tuloksetlista"]["sarja"] = valittusarjavalue;
+
+	  console.log(muokattava_joukkue["jasenet"]);
+	let jasen1 ="";
+	  for (let i = 0; i < muokattava_joukkue["jasenet"].length; i++) {
+		if (muokattava_joukkue["jasenet"][i+1] === undefined) {
+			jasen1 += muokattava_joukkue["jasenet"][i];
+		} else {
+			jasen1 += muokattava_joukkue["jasenet"][i];
+			jasen1 += ", ";
+		}
+	}
+
+	console.log(jasen1);
+	alkuperainen_joukkue["tuloksetlista"]["jasenet"] = jasen1;
+	console.log(alkuperainen_joukkue["tuloksetlista"]);
+	console.log(xmldata.documentElement.getElementsByTagName("joukkue"));
+	lomake2.reset();
+	
+	tallennusbuttoni.value = "Lisää joukkue";
+
 	}
 	
 	
