@@ -48,7 +48,7 @@ javascript-koodissa.
 -->
 <div id="rasticontainer">
 <h2>Lisää rasti</h2>
-<form action="#">
+<form action="#" id ="rastilisaus">
   <fieldset>
     <legend>Rastin tiedot</legend>
     <p>
@@ -128,7 +128,7 @@ päivittää.
   <fieldset id="tiedot">
     <legend>Uusi joukkue</legend>
     <p>
-      <label>Nimi <input type="text" id="jnimi" name="jnimi" value=""/></label>
+      <label>Nimi <input type="text" id="jnimi" name="jnimi" value="" required="required"/></label>
     </p>
    
     <fieldset id="jasenetfield">
@@ -141,7 +141,7 @@ päivittää.
 
         </div>
   </fieldset>
-  <input type="submit" value="Tallenna" />
+  <input type="submit" id="tallennusbutton" value="Lisää joukkue" />
   </fieldset>
 
   
