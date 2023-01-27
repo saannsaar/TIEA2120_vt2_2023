@@ -17,10 +17,6 @@
 		let parser = new window.DOMParser();
 		xmldata = parser.parseFromString( data, "text/xml" );
 		// tästä eteenpäin omaa koodia
-		console.log(xmldata);
-		console.log(xmldata.documentElement);
-		console.log(xmldata.documentElement.getElementsByTagName("joukkue"));
-		console.log(xmldata.documentElement.getElementsByTagName("sarja"));
 		
 
 		let tallennusbuttoni = document.getElementById("tallennusbutton");
@@ -34,27 +30,29 @@
 			if (a.lastChild.textContent > b.lastChild.textContent) {return 1;}
 			return 0;
 			});
-		console.log(jarjestetytSarjat[0].lastChild.textContent);
+		
 		let muokattava_joukkue = {};
 		let lomake = document.forms[0];
 		let lomake2 = document.forms[1];
+		
 		let fieldset = document.getElementById("jaseninputit");
 		let alkuperainen_joukkue = muokattava_joukkue;
+
         // Luodaan sarjaobjekti johon tallennetaan sarjan id ja sitä vastaava nimi 
         let sarjaObj = {};
         for ( let child of jarjestetytSarjat) {
 			console.log(child.lastChild.textContent);
             sarjaObj[child.lastChild.textContent ] = child.getAttribute("sarjaid");
         }
-		console.log(sarjaObj);	
+		
 
 		
-  
+		let tuloksetlista = document.getElementById("tuloksetlista");
 		
 		joukkuelistaus();
 	function joukkuelistaus() {
-	let tuloksetlista = document.getElementById("tuloksetlista");
-
+	
+		
 	let joukkueet = xmldata.documentElement.getElementsByTagName("joukkue");
 	
 	// Järjestetään tulokset ensisijaisesti sarjan nimen mukaan aakkosjärjestyksessä
@@ -130,14 +128,15 @@
 			ul.appendChild(li2);
 			td2.appendChild(ul);
 			tr.appendChild(td1);
+			tr.appendChild(td2);
 			li1.joukkueYksi = joukkueYksi;
 			joukkueYksi["tuloksetlista"] = {
-				"nimi": joukkuenimi1.textContent,
-				"sarja": sarjanimi1.textContent,
+				"nimi": joukkuenimi1,
+				"sarja": sarjanimi1,
 				"jasenet": jasenetnimet
 			};
-			tr.appendChild(td2);
-
+			
+		
 			tuloksetlista.appendChild(tr);
 	}
 }
@@ -146,11 +145,25 @@
 console.log(lomake2["jnimi"]);
 
 let muokkausbutton = document.getElementById("muokkausbutton");
-	console.log(muokkausbutton);
+	
 	
 
 // MUOKATAAN JOUKKUETTA
  function muokkaa(e) {
+
+	lomake2.reset();
+
+	//Poistetaan ylimääräiset jäsen-inputit jos vaan klikattiinkin toista
+	//joukkuetta lomakkeelle
+	let jasenlaatikot = document.getElementsByClassName("jasenet");
+	for (let i = jasenlaatikot.length-1; i > 1; i--) {
+		if (i > 1) {
+		  jasenlaatikot[i].parentNode.remove();
+		}
+	  }
+
+	  // Muutetaan submit-napin value oikeaksi että osataan 
+	  // submit eventhandlerissa tehdä oikea tapahtuma
 	tallennusbuttoni.value ="Tallenna muutokset";
 	
 	let joukkue = e.currentTarget.joukkueYksi;
@@ -164,14 +177,17 @@ let muokkausbutton = document.getElementById("muokkausbutton");
   muokattava_joukkue["jasenet"] = joukkue["jasenet"];
 
   alkuperainen_joukkue = joukkue;
-	lomake2[`jnimi`].value = muokattava_joukkue["tuloksetlista"]["nimi"];
+  console.log(alkuperainen_joukkue);
+	lomake2[`jnimi`].value = muokattava_joukkue["tuloksetlista"]["nimi"].textContent;
 
 	console.log(muokattava_joukkue["tuloksetlista"]["sarja"]);
 
 	let buttonit = document.getElementsByClassName("sarjabutton");
 	
+	// käydään sarja radiobuttonit läpi ja etsitään oikea
+	// ja checkataan se
 	for (let i = 0; i < buttonit.length; i++) {
-		if (buttonit[i].value == muokattava_joukkue["tuloksetlista"]["sarja"]) {
+		if (buttonit[i].value == muokattava_joukkue["tuloksetlista"]["sarja"].textContent) {
      
       console.log(muokattava_joukkue["tuloksetlista"]["sarja"]);
 			buttonit[i].checked = true;
@@ -192,6 +208,8 @@ let muokkausbutton = document.getElementById("muokkausbutton");
 
 	let i = 0;
 	let jasennumero = 2;
+
+	// Lisätään jäsenet oikeisiin inputteihin
 	for (; i < muokattavan_jasenet_arr.length; i++) {
 		let jasen = muokattavan_jasenet_arr[i];
 		let input = fieldset.children[i];
@@ -213,7 +231,7 @@ let muokkausbutton = document.getElementById("muokkausbutton");
 			fieldset.appendChild(input);
 		}
 		if ( jasen ) {
-			// todo
+			
 			console.log(input.children[0]);
 			input.children[0].value = jasen;
 		}
@@ -225,6 +243,7 @@ let muokkausbutton = document.getElementById("muokkausbutton");
 
  let joukkueennimi = document.getElementById("jnimi");
 
+ // Joukkueen nimen lisäysinputit eventlistener ja tarkistukset
  joukkueennimi.addEventListener("input", function(e) {
 	console.log("TOIMII", joukkueennimi);
 	let joukkueennimii = e.target;
@@ -365,6 +384,7 @@ lomake.addEventListener("submit", function (e) {
 
 rastibuttonit();
 function rastibuttonit() {
+
 	let lisaysformi = document.forms[1].elements;
 	console.log(lisaysformi);
 	let fieldsetti = lisaysformi[2].parentNode;
@@ -377,7 +397,7 @@ function rastibuttonit() {
 	sarjalegend.appendChild(otsikko);
 	sarjalegend.otsikko = otsikko;
 	sarjatfield.appendChild(sarjalegend);
-
+	// Sortataan sarjat aakkosjärjestykseen sarjaobjektista
 	let sortedsarjaObj = Object.entries(sarjaObj).sort(([,a],[,b]) => b-a);
 	console.log(sortedsarjaObj);
 	
@@ -410,62 +430,50 @@ function rastibuttonit() {
 	
 
 
-
+// Uuden joukkueen lisäysfunktio
 function joukkuelisays() {
 
 
-
-  
 	let lisayslomake = document.forms[0];
   
 	let nimilaatikko = document.getElementById("jnimi"); 
 	let valittusarja = lomake2.getElementsByClassName("sarjabutton");
   
+	// Etsitään lomakkeesta valittu sarja radiobutton
 	let valittusarjavalue;
 	for (let i = 0; i < valittusarja.length; i++) {
 	  if (valittusarja[i].checked) {
-		console.log(valittusarja[i].parentElement.textContent);
 		valittusarjavalue = valittusarja[i].parentElement.textContent;
 	  }
 	}
-	console.log(valittusarjavalue);
-	console.log(sarjaObj);
-   console.log(sarjaObj["1286437"]);
-
+	
+   // Etsitään oikea sarjaid
    let sarjakey = Object.keys(sarjaObj).find(key => sarjaObj[key] === valittusarjavalue);
 		console.log(sarjakey);
   
 
   let jasenlaatikot = document.getElementsByClassName("jasenet");
   
-  // Jos vain toinen on täytetty jäsenistä listään se stringinä, jos molemmat täytettyjä tehdään Array   
- let jasenetjoukkueelle = [];
-	 
-		
+
+
+ let jasenetelement = xmldata.createElement("jasenet");
+// Käydään jäsen inputit läpi 
+// ja tehdään xml elementti jokaisesta inputin arvosta
 for (let i = 0; i < jasenlaatikot.length; i++) {
 	if (jasenlaatikot[i].value === "") {
 		continue;
 	}else {
-		jasenetjoukkueelle.push(jasenlaatikot[i].value);
-	}
-}
-		
-
-
-	
-
-   console.log(jasenetjoukkueelle);
-  
-	// LIsättävä joukkue
-
-	let jasenetelement = xmldata.createElement("jasenet");
-
-	for (let j of jasenetjoukkueelle) {
 		let jasenelement = xmldata.createElement("jasen");
-		jasenelement.textContent = j;
+		jasenelement.textContent = jasenlaatikot[i].value;
 		jasenetelement.appendChild(jasenelement);
 	}
-
+}
+  
+	// LIsättävä joukkue
+	// Luodaan uusi joukkue elementti xml rakenteeseen
+	// ja annetaan sille oikeat attribuutit
+	// ja lopulta lisätään joukkue olemassaolevaan
+	// xmldata joukkueet elementtiins
 	let uusijoukkue = xmldata.createElement("joukkue");
 	uusijoukkue.setAttribute("aika", "00:00:00");
 	uusijoukkue.setAttribute("matka", "0");
@@ -575,6 +583,7 @@ for (let i = 0; i < jasenlaatikot.length; i++) {
 
 	} else if (tallennusbuttoni.value =="Tallenna muutokset") {
 		e.preventDefault();
+		let valittunimi = document.getElementById("jnimi");
 
 		let valittusarja = lomake2.getElementsByClassName("sarjabutton");
 		console.log(valittusarja);
@@ -597,15 +606,30 @@ for (let i = 0; i < jasenlaatikot.length; i++) {
 				jasenetarray.push(jasenlaatikot[i].value);
 			}
 			}
+			muokattava_joukkue["nimi"] = valittunimi.value;
 			 
   		muokattava_joukkue["sarja"] = valittusarjavalue;
   		muokattava_joukkue["jasenet"] = jasenetarray;
 		console.log(muokattava_joukkue["nimi"]);
-	  	alkuperainen_joukkue["nimi"] = muokattava_joukkue["nimi"];
-	  	alkuperainen_joukkue["sarja"] = muokattava_joukkue["sarja"];
-	  	alkuperainen_joukkue["jasenet"] = muokattava_joukkue["jasenet"];
-	  	alkuperainen_joukkue["tuloksetlista"]["nimi"] = muokattava_joukkue["nimi"];
-	  	alkuperainen_joukkue["tuloksetlista"]["sarja"] = valittusarjavalue;
+		
+	  	alkuperainen_joukkue.getElementsByTagName("nimi")[0].textContent = muokattava_joukkue["nimi"];
+	  	alkuperainen_joukkue.setAttribute("sarja", sarjaObj[muokattava_joukkue["sarja"]]);
+	  	
+
+			let jasenetjoukkueelle = alkuperainen_joukkue.getElementsByTagName("jasenet");
+			// Tyhjennetään alkuperäisen joukkueen jäsenet elementti jotta voidaan
+			//Lisätä uudet muokatut jäsenet 
+			jasenetjoukkueelle.textContent = "";
+	for (let j of muokattava_joukkue["jasenet"]) {
+		let jasenelement = xmldata.createElement("jasen");
+		jasenelement.textContent = j;
+		alkuperainen_joukkue.getElementsByTagName("jasenet")[0].appendChild(jasenelement);
+	}
+
+
+		console.log(alkuperainen_joukkue);
+	  	alkuperainen_joukkue["tuloksetlista"]["nimi"].textContent = muokattava_joukkue["nimi"];
+	  	alkuperainen_joukkue["tuloksetlista"]["sarja"].textContent = valittusarjavalue;
 
 	  console.log(muokattava_joukkue["jasenet"]);
 	let jasen1 ="";
@@ -619,10 +643,19 @@ for (let i = 0; i < jasenlaatikot.length; i++) {
 	}
 
 	console.log(jasen1);
-	alkuperainen_joukkue["tuloksetlista"]["jasenet"] = jasen1;
+	alkuperainen_joukkue["tuloksetlista"]["jasenet"].textContent = jasen1;
 	console.log(alkuperainen_joukkue["tuloksetlista"]);
 	console.log(xmldata.documentElement.getElementsByTagName("joukkue"));
 	lomake2.reset();
+	for (let jok of xmldata.documentElement.getElementsByTagName("joukkue")) {
+		console.log(jok);
+	}
+	
+    for (let i = jasenlaatikot.length-1; i > 1; i--) {
+      if (i > 1) {
+        jasenlaatikot[i].parentNode.remove();
+      }
+    }
 	
 	tallennusbuttoni.value = "Lisää joukkue";
 
