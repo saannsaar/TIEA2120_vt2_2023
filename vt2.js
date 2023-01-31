@@ -17,11 +17,11 @@
 		let parser = new window.DOMParser();
 		xmldata = parser.parseFromString( data, "text/xml" );
 		// tästä eteenpäin omaa koodia
-		
+		console.log(xmldata);
 
 		let tallennusbuttoni = document.getElementById("tallennusbutton");
 
-// Funktio joka palauttaa järjestetyt tulokset listattuna sivulle
+
 
 
         let sarja = xmldata.documentElement.getElementsByTagName("sarja");
@@ -30,6 +30,7 @@
 			if (a.lastChild.textContent > b.lastChild.textContent) {return 1;}
 			return 0;
 			});
+		
 		
 		let muokattava_joukkue = {};
 		let lomake = document.forms[0];
@@ -44,7 +45,16 @@
 			console.log(child.lastChild.textContent);
             sarjaObj[child.lastChild.textContent ] = child.getAttribute("sarjaid");
         }
+		let leimauksetXml = Array.from(xmldata.getElementsByTagName("leimaustavat")[0].children);
+		console.log(leimauksetXml);
 		
+		let leimausObj = {};
+		for (let i = 0; i < leimauksetXml.length; i++) {
+			console.log(i, leimauksetXml[i].textContent);
+			leimausObj[i] = leimauksetXml[i].textContent;
+		}
+		
+		console.log(leimausObj);
 
 		
 		let tuloksetlista = document.getElementById("tuloksetlista");
@@ -73,10 +83,13 @@
 	let tr1 = document.createElement("tr");
 	let th1 = document.createElement("th");
 	let th2 = document.createElement("th");
+	let th3 = document.createElement("th");
+	th3.textContent ="Leimaustapa";
 	th1.textContent = "Sarja";
 	th2.textContent = "Joukkue";
 	tr1.appendChild(th1);
 	tr1.appendChild(th2);
+	tr1.appendChild(th3);
 	tuloksetlista.appendChild(tr1);
 
 	
@@ -101,10 +114,39 @@
 			
 		}
 		
-			
 			let tr = document.createElement("tr");
+			//Sarjalle
 			let td1 = document.createElement("td");
+			//Joukkueen nimelle jne.
 			let td2 = document.createElement("td");
+			//Leimaustavoille
+			let td3 = document.createElement("td");
+
+			console.log(joukkueYksi.getElementsByTagName("leimaustapa"));
+			let leimaustavat = Array.from(joukkueYksi.getElementsByTagName("leimaustapa")[0].children);
+			console.log(leimaustavat);
+	
+			
+			// Lista leimaustapoja varten
+			let leimauksetUL = document.createElement("ul");
+			leimaustavat.sort(function(a,b) {
+			if (leimausObj[a.textContent] < leimausObj[b.textContent]) {
+				return -1;
+			}
+			if (leimausObj[a.textContent] > leimausObj[b.textContent]) {
+				return 1;
+			}
+			return 0;
+	});
+	console.log(leimaustavat);
+	
+			for (let i = 0; i < leimaustavat.length; i++) {
+				console.log(leimaustavat[i]);
+				let leimausli = document.createElement("li");
+				leimausli.textContent = leimausObj[leimaustavat[i].textContent];
+				leimauksetUL.appendChild(leimausli);
+			}
+			td3.appendChild(leimauksetUL);
 			let ul = document.createElement("ul");
 			
 			let li1 = document.createElement("li");
@@ -129,6 +171,7 @@
 			td2.appendChild(ul);
 			tr.appendChild(td1);
 			tr.appendChild(td2);
+			tr.appendChild(td3);
 			li1.joukkueYksi = joukkueYksi;
 			joukkueYksi["tuloksetlista"] = {
 				"nimi": joukkuenimi1,
@@ -400,20 +443,24 @@ function rastibuttonit() {
 	// Sortataan sarjat aakkosjärjestykseen sarjaobjektista
 	let sortedsarjaObj = Object.entries(sarjaObj).sort(([,a],[,b]) => b-a);
 	console.log(sortedsarjaObj);
+	for (let leima in leimausObj) {
+		
+	}
 	
-	for (let sarja in sarjaObj) {
-
-		console.log(sarja);
-		console.log(sarjaObj[sarja]);
+	
+	//Käydään aakkosjärjestykseen sortatut sarjat
+	//Läpi ja luodaan jokaiselle oma radiobutton
+	//jotka lisätään sitten lomakkeeseen
+	for (let sarja of sortedsarjaObj) {
 
 	  let p = document.createElement("p");
 	  let labeli = document.createElement("label");
-	  labeli.textContent = sarja;
+	  labeli.textContent = sarja[0];
 	  let radiobutton = document.createElement("input");
 	  radiobutton.type = "radio";
 	  radiobutton.name = "sarjat";
-	  radiobutton.value = sarja;
-	  radiobutton.id = sarjaObj[sarja];
+	  radiobutton.value = sarja[0];
+	  radiobutton.id = sarja[1];
 	  radiobutton.className = "sarjabutton";
 	  labeli.appendChild(radiobutton);
 	  p.appendChild(labeli);
