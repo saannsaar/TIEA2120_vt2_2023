@@ -1,6 +1,3 @@
-li {
-    list-style-type: none;
-}
 
 #tuloksetdiv {
     background-color: #FAFCF6;
@@ -9,24 +6,52 @@ li {
     border-color: #D69C52 ;
     width: fit-content;
     padding: 10px;
+    margin-right: 10px;
+   
 
 }
+#tuloksetlista > tr > td > ul  {
+    list-style-type: none;
+}
 
-#container1 {
+#container1, #container2 {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     margin-right: 20px;
     
 }
 
 #joukkuecontainer {
+    background-color: #FAFCF6;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    padding: 5px;
+    border-style: solid;
+    border-width: 4px;
+    border-color: #D69C52 ;
+}
+
+#rasticontainer {
+    border-style: solid;
+    border-width: 4px;
+    height: max-content;
+    padding: 5px;
+    margin-top: 10px;
+    margin-right: 15px;
+    border-color: #D69C52 ;
+    background-color: #FAFCF6;
     display: flex;
     flex-direction: column;
     width: fit-content;
 }
-
-#rasticontainer {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
+#rastilistacontainer {
+    list-style: circle;
+    border-style: dotted;
+    padding: 5px;
+    margin-top: 10px;
+    border-width: 4px;
+    border-color: #D69C52 ;
+    background-color: #FAFCF6;
 }

@@ -21,6 +21,7 @@
 
 		let tallennusbuttoni = document.getElementById("tallennusbutton");
 
+		
 		let sortOrder = "";
 
 		// Järjestetään sarjat nousevaan järjestykseen
@@ -33,8 +34,8 @@
 		
 		
 		let muokattava_joukkue = {};
-		let lomake = document.forms[0];
-		let lomake2 = document.forms[1];
+		let lomake = document.forms[1];
+		let lomake2 = document.forms[0];
 		
 		let fieldset = document.getElementById("jaseninputit");
 		let alkuperainen_joukkue = muokattava_joukkue;
@@ -69,6 +70,9 @@
 	function joukkuelistaus() {
 	
 		let rastitXml = Array.from(xmldata.getElementsByTagName("rasti"));
+		// Tehdään rastiobjekti johon tallennetaan tunniste ja rastin koodi,
+		// jotta voidaan löytää oikeat rastikoodit joukkueen 
+		// rastileimauksista objektin avulla
 		let rastiObj = {};
 		for (let i = 0; i < rastitXml.length; i++) {
 			rastiObj[rastitXml[i].getAttribute("tunniste")] = rastitXml[i].getAttribute("koodi");
@@ -103,7 +107,6 @@
 	tr1.appendChild(th4);
 	tuloksetlista.appendChild(tr1);
 
-	// PISTEIDEN LASKU
 
 	let rastit = Array.from(xmldata.getElementsByTagName("rasti"));
 
@@ -134,15 +137,16 @@
 		}
 		
 			let tr = document.createElement("tr");
-			//Sarjalle
+			//Sarjalle td
 			let td1 = document.createElement("td");
-			//Joukkueen nimelle jne.
+			//Joukkueen nimelle td
 			let td2 = document.createElement("td");
-			//Leimaustavoille
+			//Leimaustavoille td
 			let td3 = document.createElement("td");
-			//Pisteille
+			//Pisteille td
 			let td4 = document.createElement("td");
 
+			// Järjestetään rastileimaukset leimausajan mukaan nousevaan järjestykseen
 			let rastit = Array.from(joukkueYksi.getElementsByTagName("leimaus")).sort(function(a,b) {
 				let c = new Date(a.getAttribute("aika"));
 				let d = new Date(b.getAttribute("aika"));
@@ -162,9 +166,6 @@
 				r.push(rastiObj[k.getAttribute("rasti")]);
 			}
 			
-			
-			
-			
 			// Pisteiden lasku
 			if ( r.length == 0) {
 				
@@ -183,11 +184,18 @@
 			    if (r[0] == "MAALI") {
 				r.splice(0,1);
 				
-			   } else if (r[i] == "LAHTO" && r[i] == r[i+1]){
+			   } 
+			   // Jos leimaus on LAHTO ja seuraava leimaus on myös LAHTO
+			   // poistetaan ensimmäinen LAHTO leimaus
+			   else if (r[i] == "LAHTO" && r[i] == r[i+1])
+			   {
 				
-				r.splice(i+1,1);
+				r.splice(i,1);
 				
-			   } else if (r[i] == "MAALI" && r[i+1] != undefined) {
+			   } 
+			   // Jos leimaus on MAALI ja sen jälkeen on vielä leimauksia
+			   // poistetaan seuraava leimaus
+			   else if (r[i] == "MAALI" && r[i+1] != undefined) {
 				
 				r.splice(i+1, 1);
 			   }
@@ -196,6 +204,7 @@
 			  
 			   let pisteet = 0;
 
+			   // Poistetaan duplikaatit 
 			   let uudetkoodit = [...new Set(r)];
 			  
 			for (let u = 0; u < uudetkoodit.length; u++) {
@@ -210,10 +219,6 @@
 			  let pisteP = document.createElement("p");
 			  pisteP.textContent = pisteet.toString();
 			  td4.appendChild(pisteP);
-			 
-			
-
-			 
 			}
 			
 			
@@ -232,11 +237,11 @@
 	});
 
 	
-			for (let i = 0; i < leimaustavat.length; i++) {
+		for (let i = 0; i < leimaustavat.length; i++) {
 				
-				let leimausli = document.createElement("li");
-				leimausli.textContent = leimausObj[leimaustavat[i].textContent];
-				leimauksetUL.appendChild(leimausli);
+			let leimausli = document.createElement("li");
+			leimausli.textContent = leimausObj[leimaustavat[i].textContent];
+			leimauksetUL.appendChild(leimausli);
 			}
 			td3.appendChild(leimauksetUL);
 			let ul = document.createElement("ul");
@@ -253,8 +258,6 @@
 			a.appendChild(joukkuenimi1);
 			li1.appendChild(a);
 			// tallennetaan li-objektiin viite tietorakenteessa olevaan objektiin
-			
-			
 			li1.addEventListener("click", muokkaa);
 			li2.appendChild(jasenetnimet);
 			li2.jasenetnimet = jasenetnimet;
@@ -265,6 +268,7 @@
 			tr.appendChild(td2);
 			tr.appendChild(td3);
 			tr.appendChild(td4);
+			// Tallennetaan joukkueen viite li elementtiin
 			li1.joukkueYksi = joukkueYksi;
 			joukkueYksi["tuloksetlista"] = {
 				"nimi": joukkuenimi1,
@@ -276,11 +280,10 @@
 		
 			tuloksetlista.appendChild(tr);
 	}
-
-	// SORTATAAN 
-	
 }
-        
+
+// Sortataan joukkueet aluksi joukkueen sarjan mukaan nousevaan järjestykseen,
+// sitten pisteiden mukaan laskevaan järjestykseen
 function alkusorttaus() {
 	sortOrder ="ALKU";
 	let table, rows, switching, e, s, b,d, r, shouldSwitch;
@@ -314,7 +317,8 @@ function alkusorttaus() {
 	}
 
 }
-        
+
+// Joukkueen sarjan mukaan sorttaus nousevaan järjestykseen
 function sarjasort() {
 	sortOrder ="SARJA";
 	let table, rows, switching, i, a, b, shouldSwitch;
@@ -344,7 +348,7 @@ function sarjasort() {
 }
 
 
-
+// Joukkueen mukaan sorttaus aakkosjärjestyksessä nousevaan järjestykseen
 function joukkuesort() {
 	sortOrder ="JOUKKUE";
 	let table, rows, switching, i, a, b, shouldSwitch;
@@ -371,6 +375,7 @@ function joukkuesort() {
 	}
 }
 
+//Joukkueen pisteiden mukaan sorttaus laskevaan järjestykseen
 function pistesort() {
 	sortOrder ="PISTE";
 	let table, rows, switching, i, a, b, shouldSwitch;
@@ -567,7 +572,7 @@ rastilistaus();
 	
 
 	// Haetaan hmtl forms 
-	let lisayslomake = document.forms[0].elements;
+	let lisayslomake = document.forms[1].elements;
 
 	// Määritellään jokainen formsin solu
 	let latlaatikko = lisayslomake["Lat"];
@@ -576,16 +581,16 @@ rastilistaus();
 
 
 	// Määritellään se, että mikään input laatikoista ei saa olla tyhjänä, muuten lisäystä ei tehdä
-	if (!koodilaatikko.value) {
-			return false;
-	}
+	
 
 	if (!latlaatikko.value && !isNaN(latlaatikko.value)) {
+		console.log("LAT PUUTTUU");
 			return false;
 	}
 
 
 	if (!lonlaatikko.value && !isNaN(lonlaatikko.value)) {
+		console.log("LON PUUTTUU");
 			return false;
 	}
 	
@@ -631,7 +636,7 @@ lomake.addEventListener("submit", function (e) {
 	rastilistaus();
 	// Resetoidaan Rastilisäys lomake
 	lomake.reset();
-	rastibuttonit();
+	
 
 
 	
@@ -643,7 +648,7 @@ lomake.addEventListener("submit", function (e) {
 rastibuttonit();
 function rastibuttonit() {
 
-	let lisaysformi = document.forms[1].elements;
+	let lisaysformi = document.forms[0].elements;
 	
 	let fieldsetti = lisaysformi[2].parentNode;
 	let jasenetfieldsetti = lisaysformi[2];
@@ -719,7 +724,7 @@ function rastibuttonit() {
 function joukkuelisays() {
 
 
-	let lisayslomake = document.forms[0];
+	let lisayslomake = document.forms[1];
   
 	let nimilaatikko = document.getElementById("jnimi"); 
 	let valittusarja = lomake2.getElementsByClassName("sarjabutton");
@@ -741,6 +746,8 @@ function joukkuelisays() {
   
 let leimausboxit = document.getElementsByClassName("leimabutton");
 let leimaustavatElement = xmldata.createElement("leimaustapa");
+//Käydään leimaus checkboxit läpi ja etsitään checkatut joista
+// Tehdään leimaus elementtejä
 for (let i = 0; i < leimausboxit.length; i++) {
 	if (leimausboxit[i].checked) {
 		let leimtapElement = xmldata.createElement("leimaustapa");
@@ -777,16 +784,15 @@ for (let i = 0; i < jasenlaatikot.length; i++) {
 	let joukkuenimi = xmldata.createElement("nimi");
 	joukkuenimi.textContent = nimilaatikko.value;
   	
-
+	// Lisätään uuteen joukkueeseen oikeat lapsielementit
 	uusijoukkue.appendChild(rastileimaukset);
 	uusijoukkue.appendChild(joukkuenimi);
 	uusijoukkue.appendChild(leimaustavatElement);
 	uusijoukkue.appendChild(jasenetelement);
 
-	
-	let rastit = xmldata.documentElement.firstChild;
 	let joukkueet = xmldata.documentElement.lastChild;
 	
+	//Lisätään uusi joukkue xml joukkueisiin
 	joukkueet.appendChild(uusijoukkue);
 	
 	return;
@@ -805,15 +811,12 @@ for (let i = 0; i < jasenlaatikot.length; i++) {
 
     function lisaaJasenInput(e) {
         // käydään läpi kaikki input-kentät viimeisestä ensimmäiseen
-        // järjestys on oltava tämä, koska kenttiä mahdollisesti poistetaan
-        // ja poistaminen sotkee dynaamisen nodeList-objektin indeksoinnin
-        // ellei poisteta lopusta 
         let viimeinen_tyhja = -1; // viimeisen tyhjän kentän paikka listassa
         for(let i=jaseninputit.length-1 ; i>-1; i--) { // inputit näkyy ulommasta funktiosta
             let input = jaseninputit[i];
             
             if ( viimeinen_tyhja > -1 && input.value.trim() == "") { // ei kelpuuteta pelkkiä välilyöntejä
-                let poistettava = jaseninputit[viimeinen_tyhja].parentNode; // parentNode on label, joka sisältää inputin
+                let poistettava = jaseninputit[viimeinen_tyhja].parentNode; // parentNode on label
                 fieldset.removeChild( poistettava );
                 viimeinen_tyhja = i;
             }
@@ -832,10 +835,10 @@ for (let i = 0; i < jasenlaatikot.length; i++) {
             input.addEventListener("input", lisaaJasenInput);
             fieldset.appendChild(label).appendChild(input);
         }
-        // jos halutaan kenttiin numerointi
-        for(let i=0; i<jaseninputit.length; i++) { // inputit näkyy ulommasta funktiosta
+        // Lisätään oikea labelnimi
+        for(let i=0; i<jaseninputit.length; i++) { 
                 let label = jaseninputit[i].parentNode;
-                label.firstChild.nodeValue = "Jäsen " + (i+1); // päivitetään labelin ekan lapsen eli tekstin sisältö
+                label.firstChild.nodeValue = "Jäsen " + (i+1); // päivitetään labelin tekstin sisältö
         }
     
     }
@@ -1049,12 +1052,17 @@ for (let i = 0; i < jasenlaatikot.length; i++) {
 	let koodiinput = e.target;
 	koodiinput.setCustomValidity("");
 	// Tarkistetaan että lisättävää koodinimeä ei jo löydy
-	//xml rakenteesta
-	for (let rasti of rastit) {
-		if (koodiinput.value.trim().toLowerCase() === rasti.getAttribute("koodi").trim().toLowerCase()) {
-			koodiinput.setCustomValidity("Ei saman nimisiä rasteja!");
-		}
+	//xml rakenteesta tai ettei koodikenttä ole tyhjä
+	if ( !koodiinput.value.trim()) {
+		koodiinput.setCustomValidity("Rastilla täytyy olla koodi");
+	} else {
+		for (let rasti of rastit) {
+			if (koodiinput.value.trim().toLowerCase() === rasti.getAttribute("koodi").trim().toLowerCase()) {
+				koodiinput.setCustomValidity(rasti.getAttribute("koodi") + "-rasti on jo olemassa!");
+			}
 	}
+	}
+	
   });
   
 

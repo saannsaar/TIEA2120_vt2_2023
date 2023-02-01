@@ -12,19 +12,6 @@
 
 <h1>Tulospalvelu</h1>
 
-<!-- Tähän tulee ykköstasolla taulukko sarjoista ja joukkueista. -->
-
-<!--
-Kolmostasolla listausta laajennetaan joukkueen jäsenten nimillä ja joukkueen 
-pisteillä.
-
-Tulokset ovat oletuksena sarjoittain pistejärjestyksessä eniten pisteitä saanut 
-joukkue ensimmäisenä.
-
-Joukkueiden nimistä tehdään linkkejä, jotka vievät joukkuelomakkeeseen. 
-Lomakkeeseen tulevat muokattavaksi klikatun joukkueen tiedot.
-
--->
 <div id="container1"> 
 <div id="tuloksetdiv">
 <table id="tuloksetlista">
@@ -33,97 +20,9 @@ Lomakkeeseen tulevat muokattavaksi klikatun joukkueen tiedot.
 </div>
         
 
-<!--
-Tähän tulee rastin lisäämistä varten lomake
-Koodi saa olla mitä tahansa, mutta sen on oltava uniikki
-Lat täytyy olla numero
-Lon täytyy olla numero
-Jos kaikkia tietoja ei ole täytetty oikein, niin lisäystä ei tehdä.
-
-Sivun lomakkeissa saa käyttää input-elementeissä vain seuraavia tyyppejä: text, radio, checkbox ja submit. 
-Syöttökentissä ei saa käyttää html-koodissa määriteltäviä rajoitteita kuten required, pattern, min, max, 
-maxlength tai minlength. Kaikkien tehtävässä mainittujen rajoitteiden tarkistukset on tehtävä 
-javascript-koodissa.
-
--->
-<div id="rasticontainer">
-<h2>Lisää rasti</h2>
-<form action="#" id ="rastilisaus">
-  <fieldset>
-    <legend>Rastin tiedot</legend>
-    <p>
-      <label>Lat <input type="number" id="Lat" name="Lat" step="any" /></label>
-    </p>
-    <p>
-      <label>Lon <input type="number" id="Lon" name="Lon" step="any" /></label>
-    </p>
-    <p>
-      <label>Koodi <input type="text" id="Koodi" name="Koodi" /></label>
-    </p>
-    <p><input type="submit" value="Lisää rasti" /></p>
-
-  </fieldset>
-</form>
-
-</div>
-
-
-
-        
-<!--
-Kolmostasolla täydennä tähän lomake jolla voi lisätä uuden joukkueen tai muokata
-jo olemassa olevan joukkueen tietoja. 
-
-Sivun lomakkeissa saa käyttää input-elementeissä vain seuraavia tyyppejä: text, radio, checkbox ja submit. 
-Syöttökentissä ei saa käyttää html-koodissa määriteltäviä rajoitteita kuten required, pattern, min, max, 
-maxlength tai minlength. Kaikkien tehtävässä mainittujen rajoitteiden tarkistukset on tehtävä 
-javascript-koodissa.
-
-Joukkueelta kysytään nimi, leimaustavat ja lista jäsenistä. 
-
-leimaustavat valitaan valintaruutuja käyttäen
-
-Jäseniä voi syöttää n kappaletta. Jäseniä on aina syötettävä vähintään
-kaksi kappaletta eli alussa on oltava kentät kahden jäsenen nimille. 
-
-Uusia syöttökenttiä luodaan tarpeen mukaan. 
-
-Jos kaikkia pyydettyjä tietoja (joukkueen nimi ja väh. kaksi jäsentä ) ei ole
-syötetty, niin lisäystä ei tehdä. 
-
-Lisää joukkue -painike on disabloituna kunnes pakolliset tiedot on syötetty.
-
-Onnistuneen lisäämisen jälkeen lomakkeen kenttien sisältö tyhjennetään.
-
-Näytä lomakkeella vain jompikumpi painikkeista: 
-  - Näytä "Lisää joukkue"-painike silloin, kun ollaan lisäämässä uutta joukkuetta
-  - Näytä "Tallenna muutokset"-painike silloin, kun ollaan muokkaamassa olemassa olevan joukkueen tietoja
-
-Uusi joukkue on lisättävä myös sivulla näkyvään joukkuelistaukseen oikealle 
-paikalle. 
-
-Oletuksena joukkueen pisteet ovat 0, kuljettu matka on 0 km ja käyttämä aika on 
-00:00:00.
--->
-
-
-<!--
-Viitostasolla lisää saman lomakkeen yhteyteen listaus joukkueen rastileimauksista. 
-
-Mahdollista leimausten täydellinen muokkaaminen eli leimauksen voi kokonaan 
-poistaa tai vaihtaa leimattua rastia tai leimauksen kellonaikaa. 
-
-Joukkueelle voi myös lisätä uusia leimauksia. 
-
-Rasti valitaan alasvetovalikosta. 
-
-Jos joukkueen leimauksiin tehdään muutoksia niin myös tuloslistaus täytyy 
-päivittää.
-
--->
 
 <div id="joukkuecontainer">
-  <h2>Joukkue</h2>
+  <h2>Joukkueen lisäys/muokkaus</h2>
 <form action="#" id="lisayslomake">
   <fieldset id="tiedot">
     <legend>Uusi joukkue</legend>
@@ -149,14 +48,46 @@ päivittää.
 </div>
 </div>
 
-<h2>Rastit</h2>
+<div id="container2">
+  <div id="rasticontainer">
+    <h2>Lisää rasti</h2>
+    <form action="#" id ="rastilisaus">
+      <fieldset>
+        <legend>Rastin tiedot</legend>
+        <p>
+          <label>Lat <input type="number" id="Lat" name="Lat" step="any" /></label>
+        </p>
+        <p>
+          <label>Lon <input type="number" id="Lon" name="Lon" step="any" /></label>
+        </p>
+        <p>
+          <label>Koodi <input type="text" id="Koodi" name="Koodi" /></label>
+        </p>
+        <p><input type="submit" value="Lisää rasti" /></p>
+    
+      </fieldset>
+    </form>
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    <div id="rastilistacontainer">
+    
+    <h2>Rastit</h2>
+    
+    <ul id="rastilista">
+      
+    </ul>
+    
+    
+  </div>
 
-<ul id="rastilista">
-  
-</ul>
+</div>
 
-
-<!-- Tähän tulee listaus kaikista rastikoodeista -->      
 
 <!-- Tästä eteenpäin on vain apuvälineenä käytettäviä skriptejä. Älä poista tai muuta -->
 <!-- HTMLinspectoria käytetään sivun live-muutosten validointiin. Kannattaa
